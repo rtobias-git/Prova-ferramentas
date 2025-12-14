@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="primefaces"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:define name="content">
+        <h:form id="form">
+            <p:selectOneMenu 
+                id="status"
+                value="#{alocacaoController.statusSelecionado}">
+                <f:selectItem itemLabel="Selecione" itemValue="" />
+                <f:selectItem itemLabel="Ativas" itemValue="Ativa" />
+                <f:selectItem itemLabel="Finalizadas" itemValue="Finalizada" />
+            </p:selectOneMenu>
+            <p:column>
+                <p:commandButton value="Filtrar Por Status"
+                                 update="growl,tabela"
+                                 action="#{alocacaoController.filtrarPorStatus()}"/>
+            </p:column>
+            <h:outputLabel value="Desenvolvedor" for="@next" />
+            <p:selectOneMenu required="true" 
+                             requiredMessage="Selecione o Desenvolvedor" 
+                             style="width: 250px" value="#{alocacaoController.desenvolvedorSelecionado}">
+                <f:selectItem itemLabel="Selecione" itemValue="" />
+                <f:selectItems value="#{alocacaoController.buscarTodosDesenvolvedores()}"
+                               var="item" itemLabel="#{item.nome}" itemValue="#{item}"/>
+            </p:selectOneMenu>
+            <p:column>
+                <p:commandButton value="Filtrar Por Desenvolvedor"
+                                 update="growl,tabela"
+                                 action="#{alocacaoController.filtrarPorDesenvolvedor()}"/>
+            </p:column>
+            <p:dataTable
+                id="tabela"
+                paginator="true"
+                rows="5"
+                paginatorPosition="bottom"
+                rowsPerPageTemplate="5,10,{ShowAll|'Todos'}"
+                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+
+                var="alocacao"
+                value="#{alocacaoController.alocacoes}" >
+
+                <p:column headerText="Projeto" responsivePriority="1" >
+                    <h:outputText value="#{alocacao.projeto.nome}" />
+                </p:column>
+
+                <p:column headerText="Desenvolvedor" responsivePriority="2">
+                    <h:outputText value="#{alocacao.desenvolvedor.nome}" />
+                </p:column>
+
+                <p:column headerText="Valor por hora" responsivePriority="4">
+                    <h:outputText value="#{alocacao.valorDaHora}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+
+                </p:column>
+
+                <p:column headerText="Horas por Semana" responsivePriority="5">
+                    <h:outputText value="#{alocacao.quantidadeDeHoras}" />
+                </p:column>
+
+                <p:column headerText="Status" responsivePriority="5">
+                    <h:outputText value="#{alocacao.status}" />
+                </p:column>
+
+                <p:column>
+                    <p:commandButton value="Finalizar Alocação"
+                                     update="growl,tabela"
+                                     action="#{alocacaoController.finalizar(alocacao)}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
