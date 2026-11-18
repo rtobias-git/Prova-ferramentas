@@ -1,4 +1,4 @@
-# 📋 Sistema de Alocação de Desenvolvedores em Projetos
+# Sistema de Alocação de Desenvolvedores em Projetos
 
 ![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Jakarta EE](https://img.shields.io/badge/Jakarta%20EE-10-blue?style=for-the-badge&logo=eclipse&logoColor=white)
@@ -6,48 +6,44 @@
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![GlassFish](https://img.shields.io/badge/GlassFish-7.0-red?style=for-the-badge)
 
-Aplicação web desenvolvida em **Java com Jakarta EE (JSF/Facelets, EJB, CDI e JPA)** e **PrimeFaces** como avaliação prática da disciplina de **Ferramentas de Programação** (IFSP — Campus Presidente Epitácio). O sistema gerencia a alocação de desenvolvedores em projetos, controlando carga horária semanal, valor por hora, status e regras de disponibilidade.
+Aplicação web desenvolvida em Java com Jakarta EE (JSF, EJB, CDI e JPA) e PrimeFaces para a avaliação prática da disciplina de Ferramentas de Programação no IFSP (Campus Presidente Epitácio). O sistema gerencia a alocação de desenvolvedores em projetos, controlando carga horária semanal, valor da hora, status e regras de disponibilidade.
 
 ---
 
-## 📸 Capturas de Tela
+## Capturas de tela
 
-### Cadastro de Nova Alocação (`alocacao/criar.xhtml`)
-Seleção de projeto e desenvolvedor, definição de horas semanais e valor por hora, com feedback imediato via componente de notificação (`p:growl`).
+### Cadastro de nova alocação (`alocacao/criar.xhtml`)
+Formulário para selecionar projeto e desenvolvedor, informando horas semanais e valor por hora.
 
 ![Tela de Cadastro de Alocação](images/criar-alocacao.png)
 
-### Listagem, Filtros e Finalização (`alocacao/lista.xhtml`)
-Tabela paginada com filtros por **Status** (`Ativas` / `Finalizadas`) e por **Desenvolvedor**, além da ação para finalizar alocações em andamento.
+### Listagem e filtros (`alocacao/lista.xhtml`)
+Tabela paginada com filtros por status (ativas ou finalizadas) e por desenvolvedor, além de botão para finalizar alocações ativas.
 
 ![Tela de Listagem de Alocações](images/lista-alocacoes.png)
 
 ---
 
-## ⚙️ Funcionalidades
+## Funcionalidades
 
-- **Cadastro de Alocação:** Associa um `Desenvolvedor` a um `Projeto`, informando a quantidade de horas semanais e o valor da hora trabalhada.
-- **Regra de Negócio (Disponibilidade):** Antes de persistir uma nova alocação, o `AlocacaoDAO` verifica se o desenvolvedor já possui alguma alocação com status `Ativa`, impedindo alocações simultâneas em múltiplos projetos.
-- **Listagem e Paginação:** Exibição de todas as alocações em `p:dataTable` paginada (5 ou 10 registros por página, ou exibição completa) com formatação monetária.
-- **Filtros Dinâmicos:** Pesquisa de alocações por **Status** (`Ativa` ou `Finalizada`) ou por **Desenvolvedor**.
-- **Finalização de Alocação:** Altera o status de uma alocação ativa para `Finalizada` no banco de dados via JPA, liberando o desenvolvedor para novos projetos.
-
----
-
-## 🛠️ Tecnologias e Arquitetura
-
-- **Frontend:** Jakarta Faces (JSF / Facelets), PrimeFaces `15.0.6` e CSS (`default.css`, `cssLayout.css`).
-- **Camada de Controle:** CDI Managed Bean (`AlocacaoController` com `@Named` e `@RequestScoped`) e `FacesConverter` customizados (`DesenvolvedorConverter`, `ProjetoConverter`).
-- **Camada de Persistência:** EJB (`@Stateless`) + Jakarta Persistence (JPA 3.0) com EclipseLink e MySQL (`java:app/dev_proj`).
-- **Entidades:**
-  - `Desenvolvedor` (`id`, `nome`)
-  - `Projeto` (`id`, `nome`)
-  - `Alocacao` (chave composta `AlocacaoPK` com `desenvolvedor_id` e `projeto_id`, `valor_da_hora`, `quantidade_de_horas`, `status`)
-  - `StatusAlocacao` (`Ativa`, `Finalizada`)
+- Cadastro de alocação vinculando desenvolvedor a um projeto com horas semanais e valor da hora.
+- Validação de disponibilidade: impede alocar um desenvolvedor que já possui uma alocação ativa.
+- Listagem em tabela paginada com formatação monetária.
+- Filtros por status (ativas ou finalizadas) e por desenvolvedor.
+- Finalização de alocações ativas diretamente pela listagem.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Tecnologias utilizadas
+
+- Frontend: Jakarta Faces (JSF / Facelets) e PrimeFaces 15.0.6
+- Backend e regras: CDI (@Named, @RequestScoped) e EJB (@Stateless)
+- Banco de dados e persistência: JPA com EclipseLink e MySQL
+- Entidades: Desenvolvedor, Projeto, Alocacao (chave composta com AlocacaoPK) e StatusAlocacao
+
+---
+
+## Estrutura do projeto
 
 ```text
 Prova-ferramentas/
@@ -84,28 +80,25 @@ Prova-ferramentas/
 
 ---
 
-## 🚀 Como Executar Localmente
+## Como executar
 
 ### Pré-requisitos
-- **Java JDK 17** (ou compatível com Jakarta EE 10)
-- **GlassFish 7** (configurado com o driver JDBC do MySQL em `domains/domain1/lib`)
-- **MySQL Server** em execução na porta `3306`
-- **Apache NetBeans** (recomendado para abrir e compilar o projeto Ant)
+- Java JDK 17
+- GlassFish 7 (com o driver JDBC do MySQL configurado)
+- MySQL Server rodando na porta 3306
+- NetBeans (ou IDE de preferência com suporte a Ant/Jakarta EE)
 
 ### Passos
-1. Clone este repositório:
+1. Clone o repositório:
    ```bash
    git clone https://github.com/rtobias-git/Prova-ferramentas.git
    ```
-2. Verifique as credenciais do banco em `web/WEB-INF/glassfish-resources.xml` (por padrão aponta para `localhost:3306/dev_proj`).
-3. Abra o projeto no NetBeans, certifique-se de que as bibliotecas (`primefaces-15.0.6-jakarta.jar` e `java-web-library.jar`) estão vinculadas e faça o **Deploy** no GlassFish.
-4. Cadastre registros iniciais nas tabelas `desenvolvedor` e `projeto` e acesse:
-   ```text
-   http://localhost:8080/projeto-inicial/
-   ```
+2. Verifique as configurações de conexão com o banco em `web/WEB-INF/glassfish-resources.xml`.
+3. Abra o projeto no NetBeans, adicione as dependências da biblioteca Java Web / PrimeFaces e faça o deploy no GlassFish.
+4. Cadastre desenvolvedores e projetos no banco para começar a realizar as alocações.
 
 ---
 
-## 👤 Autor
+## Autor
 
-Desenvolvido por **Tobias Rafael** ([@rtobias-git](https://github.com/rtobias-git)) — IFSP Campus Presidente Epitácio.
+Desenvolvido por **Tobias Rafael** ([@rtobias-git](https://github.com/rtobias-git)), estudante do IFSP Campus Presidente Epitácio.
